@@ -1,0 +1,175 @@
+[gd_scene load_steps=2 format=3 uid="uid://drjvpsepkhyqj"]
+
+[ext_resource type="PackedScene" uid="uid://cakkjmb01b3cp" path="res://tile.tscn" id="1_l7wyt"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Button2" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 12.0
+offset_right = 121.0
+offset_bottom = 63.0
+
+[node name="Button4" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 17.0
+offset_top = 12.0
+offset_right = 65.0
+offset_bottom = 63.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button3" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 71.0
+offset_right = 121.0
+offset_bottom = 122.0
+
+[node name="Button5" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 17.0
+offset_top = 71.0
+offset_right = 65.0
+offset_bottom = 122.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button6" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 185.0
+offset_top = 12.0
+offset_right = 233.0
+offset_bottom = 63.0
+
+[node name="Button7" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 129.0
+offset_top = 12.0
+offset_right = 177.0
+offset_bottom = 63.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button8" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 185.0
+offset_top = 71.0
+offset_right = 233.0
+offset_bottom = 122.0
+
+[node name="Button9" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 129.0
+offset_top = 71.0
+offset_right = 177.0
+offset_bottom = 122.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button10" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 130.0
+offset_right = 121.0
+offset_bottom = 181.0
+
+[node name="Button11" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 17.0
+offset_top = 130.0
+offset_right = 65.0
+offset_bottom = 181.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button12" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 73.0
+offset_top = 189.0
+offset_right = 121.0
+offset_bottom = 240.0
+
+[node name="Button13" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 17.0
+offset_top = 189.0
+offset_right = 65.0
+offset_bottom = 240.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button14" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 185.0
+offset_top = 130.0
+offset_right = 233.0
+offset_bottom = 181.0
+
+[node name="Button15" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 129.0
+offset_top = 130.0
+offset_right = 177.0
+offset_bottom = 181.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button16" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 1
+offset_left = 185.0
+offset_top = 189.0
+offset_right = 233.0
+offset_bottom = 240.0
+
+[node name="Button17" parent="." instance=ExtResource("1_l7wyt")]
+layout_mode = 0
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 129.0
+offset_top = 189.0
+offset_right = 177.0
+offset_bottom = 240.0
+grow_horizontal = 1
+grow_vertical = 1
