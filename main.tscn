@@ -1,6 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://drjvpsepkhyqj"]
+[gd_scene load_steps=5 format=3 uid="uid://drjvpsepkhyqj"]
 
 [ext_resource type="PackedScene" uid="uid://cakkjmb01b3cp" path="res://tile.tscn" id="1_l7wyt"]
+
+[sub_resource type="GDScript" id="GDScript_1wurf"]
+resource_name = "main"
+script/source = "extends Control
+
+
+var column := [ 2, 1, 2, 2, 1 ]
+var tile_scene := preload(\"res://tile.tscn\")
+@onready var GRID_SIZE :int = tile_scene.instantiate().size.x + 10
+@onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y
+
+
+func _ready():
+	for i in column.size():
+		var tile: Button = tile_scene.instantiate()
+		tile.text = str( column[i] )
+		add_child(tile)
+		tile.position = Vector2( 10, SCREEN_BOTTOM - GRID_SIZE * ( i+1 ) - 10 )
+"
 
 [sub_resource type="GDScript" id="GDScript_c442r"]
 script/source = "extends Polygon2D
@@ -30,30 +49,11 @@ func _input(event):
 [node name="Main" type="Control"]
 layout_mode = 3
 anchors_preset = 0
+script = SubResource("GDScript_1wurf")
 metadata/_edit_lock_ = true
 
-[node name="Button4" parent="." instance=ExtResource("1_l7wyt")]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 8.0
-offset_right = 109.0
-offset_bottom = 108.0
-
-[node name="Button5" parent="." instance=ExtResource("1_l7wyt")]
-layout_mode = 0
-offset_left = 117.0
-offset_top = 8.0
-offset_right = 217.0
-offset_bottom = 108.0
-
-[node name="Button6" parent="." instance=ExtResource("1_l7wyt")]
-layout_mode = 0
-offset_left = 225.0
-offset_top = 8.0
-offset_right = 325.0
-offset_bottom = 108.0
-
 [node name="Button7" parent="." instance=ExtResource("1_l7wyt")]
+visible = false
 layout_mode = 0
 offset_left = 333.0
 offset_top = 8.0

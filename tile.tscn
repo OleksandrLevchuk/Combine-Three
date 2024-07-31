@@ -35,6 +35,7 @@ func _on_button_up():
 [node name="Button" type="Button" groups=["Tiles"]]
 offset_right = 100.0
 offset_bottom = 100.0
+text = "123"
 script = SubResource("GDScript_i7gq5")
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
