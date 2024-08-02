@@ -7,18 +7,22 @@ resource_name = "main"
 script/source = "extends Control
 
 
-var column := [ 2, 1, 2, 2, 1 ]
-var tile_scene := preload(\"res://tile.tscn\")
-@onready var GRID_SIZE :int = tile_scene.instantiate().size.x + 10
-@onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y
+var column := [ 2, 1, 2, 2, 1 ] # масив з якого створюватимемо плитки в колонці
+var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
+var GRID_GAP := 10 # відстань між плитками
+@onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
+@onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y # низ екрана
 
 
-func _ready():
-	for i in column.size():
-		var tile: Button = tile_scene.instantiate()
-		tile.text = str( column[i] )
-		add_child(tile)
-		tile.position = Vector2( 10, SCREEN_BOTTOM - GRID_SIZE * ( i+1 ) - 10 )
+func _ready(): # тут починається гра
+	for i in column.size(): # ідемо циклом по кожному елементі в масиві
+		var tile: Button = tile_scene.instantiate() #створює плитку
+		tile.text = str( column[i] ) #ставить текст плитки на число з масива
+		# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
+		tile.position = Vector2( GRID_GAP, SCREEN_BOTTOM - GRID_GAP )
+		# відступити вверх на стільки клітинок, який номер в масиві
+		tile.position.y -= i * ( GRID_GAP + GRID_SIZE ) 
+		add_child( tile ) #додає плитку в дерево об'єктів
 "
 
 [sub_resource type="GDScript" id="GDScript_c442r"]
@@ -55,20 +59,17 @@ metadata/_edit_lock_ = true
 [node name="Button7" parent="." instance=ExtResource("1_l7wyt")]
 visible = false
 layout_mode = 0
-offset_left = 333.0
-offset_top = 8.0
-offset_right = 433.0
-offset_bottom = 108.0
 
 [node name="cursor" type="Polygon2D" parent="."]
 visible = false
-color = Color(1, 1, 1, 0.360784)
+scale = Vector2(2, 2)
 polygon = PackedVector2Array(0, 0, 9, 5, 6, 7, 4, 10)
 script = SubResource("GDScript_c442r")
 metadata/_edit_lock_ = true
 
 [node name="click" type="Polygon2D" parent="."]
 visible = false
+scale = Vector2(2, 2)
 color = Color(1, 1, 1, 0.501961)
 polygon = PackedVector2Array(-5, -4, -4, -5, 0, -6, 4, -5, 5, -4, 6, 0, 5, 4, 4, 5, 0, 6, -4, 5, -5, 4, -6, 0)
 script = SubResource("GDScript_38kav")
