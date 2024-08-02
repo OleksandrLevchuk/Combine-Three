@@ -74,3 +74,12 @@ color = Color(1, 1, 1, 0.501961)
 polygon = PackedVector2Array(-5, -4, -4, -5, 0, -6, 4, -5, 5, -4, 6, 0, 5, 4, 4, 5, 0, 6, -4, 5, -5, 4, -6, 0)
 script = SubResource("GDScript_38kav")
 metadata/_edit_lock_ = true
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 62.0
+offset_right = 150.0
+offset_bottom = 104.0
+theme_type_variation = &"HeaderLarge"
+text = "LABEL!"
