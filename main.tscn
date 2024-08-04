@@ -16,6 +16,8 @@ var tiles: Array
 
 
 func _ready(): # тут починається гра
+	if OS.has_feature(\"web_android\"):
+		scale = Vector2( 2, 2 )
 	for i in column.size(): # ідемо циклом по кожному елементі в масиві
 		var tile: Button = tile_scene.instantiate() #створює плитку
 		tile.id = column[i]
@@ -57,6 +59,7 @@ script/source = "extends Polygon2D
 
 
 func _ready():
+	if not OS.has_feature(\"movie\"): queue_free()
 	visible = true
 
 
@@ -66,6 +69,10 @@ func _process(_delta):
 
 [sub_resource type="GDScript" id="GDScript_38kav"]
 script/source = "extends Polygon2D
+
+
+func _ready():
+	if not OS.has_feature(\"movie\"): queue_free()
 
 
 func _process(_delta):

@@ -18,7 +18,10 @@ func _ready():
 
 func _process( _delta ):
 	position = get_global_mouse_position() - offset
-	if position.distance_to(initial_position) > MAX_DESTROY_DISTANCE * 0.8:
+	if abs(initial_position.x - position.x) > MAX_DESTROY_DISTANCE * 0.8:
+		set_process(false)
+	if abs(initial_position.y - position.y) > MAX_DESTROY_DISTANCE * 0.8:
+#	if position.distance_to(initial_position) > MAX_DESTROY_DISTANCE * 0.8:
 		var direction = \"UP\"
 		if initial_position.y < position.y:
 			direction = \"DOWN\"
@@ -41,8 +44,9 @@ func _on_button_up():
 "
 
 [node name="Button" type="Button" groups=["Tiles"]]
-offset_right = 300.0
-offset_bottom = 300.0
+offset_right = 100.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 44
 text = "123"
 script = SubResource("GDScript_i7gq5")
 
