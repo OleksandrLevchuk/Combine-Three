@@ -7,19 +7,23 @@ resource_name = "main"
 script/source = "extends Control
 
 
-var column := [ 1, 2, 3, 4, 5 ] # масив з якого створюватимемо плитки в колонці
+var column := [ 1, 2, 3, 4, 5, 6 ] # масив з якого створюватимемо плитки в колонці
 var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
 var GRID_GAP := 10 # відстань між плитками
 @onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
 @onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y # низ екрана
 var tiles: Array
+var mobile_scale: int = 1
 
 
 func _ready(): # тут починається гра
 	if OS.has_feature(\"web_android\"):
-		scale = Vector2( 2, 2 )
+		mobile_scale = 2
+		GRID_SIZE *= mobile_scale
+		GRID_GAP *= mobile_scale
 	for i in column.size(): # ідемо циклом по кожному елементі в масиві
 		var tile: Button = tile_scene.instantiate() #створює плитку
+		tile.size *= mobile_scale
 		tile.id = column[i]
 		tile.row = i
 		tile.text = str( column[i] ) #ставить текст плитки на число з масива
