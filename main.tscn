@@ -7,22 +7,49 @@ resource_name = "main"
 script/source = "extends Control
 
 
-var column := [ 2, 1, 2, 2, 1, 3, 4, 5 ] # масив з якого створюватимемо плитки в колонці
+var column := [ 1, 2, 3, 4, 5 ] # масив з якого створюватимемо плитки в колонці
 var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
 var GRID_GAP := 10 # відстань між плитками
 @onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
 @onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y # низ екрана
+var tiles: Array
 
 
 func _ready(): # тут починається гра
 	for i in column.size(): # ідемо циклом по кожному елементі в масиві
 		var tile: Button = tile_scene.instantiate() #створює плитку
+		tile.id = column[i]
+		tile.row = i
 		tile.text = str( column[i] ) #ставить текст плитки на число з масива
 		# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
 		tile.position = Vector2( GRID_GAP, SCREEN_BOTTOM - GRID_GAP )
 		# відступити вверх на стільки клітинок, який номер в масиві
 		tile.position.y -= i * ( GRID_GAP + GRID_SIZE ) 
 		add_child( tile ) #додає плитку в дерево об'єктів
+		tiles.push_back( tile )
+
+func on_tile_moved( row, direction ):
+	var lower_id = row 
+	if direction==\"DOWN\":
+		lower_id = row-1
+	if lower_id < 0:
+		print(\"reached the bottom\")
+		return
+	var upper_id = row 
+	if direction==\"UP\":
+		upper_id = row+1
+	if upper_id > tiles.size() - 1:
+		print(\"reached the ceiling\")
+		return
+	print([\"moved\", row, direction ])
+	var lower_tile = tiles[lower_id]
+	var upper_tile = tiles[upper_id]
+	lower_tile.position.y -= GRID_SIZE + GRID_GAP
+	upper_tile.position.y += GRID_SIZE + GRID_GAP
+	lower_tile.row += 1
+	upper_tile.row -= 1
+	tiles[ lower_id ] = upper_tile
+	tiles[ upper_id ] = lower_tile
 "
 
 [sub_resource type="GDScript" id="GDScript_c442r"]
@@ -56,7 +83,7 @@ anchors_preset = 0
 script = SubResource("GDScript_1wurf")
 metadata/_edit_lock_ = true
 
-[node name="Button7" parent="." instance=ExtResource("1_l7wyt")]
+[node name="Tile" parent="." instance=ExtResource("1_l7wyt")]
 visible = false
 layout_mode = 0
 
@@ -74,12 +101,3 @@ color = Color(1, 1, 1, 0.501961)
 polygon = PackedVector2Array(-5, -4, -4, -5, 0, -6, 4, -5, 5, -4, 6, 0, 5, 4, 4, 5, 0, 6, -4, 5, -5, 4, -6, 0)
 script = SubResource("GDScript_38kav")
 metadata/_edit_lock_ = true
-
-[node name="Label" type="Label" parent="."]
-layout_mode = 0
-offset_left = 59.0
-offset_top = 62.0
-offset_right = 150.0
-offset_bottom = 104.0
-theme_type_variation = &"HeaderLarge"
-text = "LABEL!"
