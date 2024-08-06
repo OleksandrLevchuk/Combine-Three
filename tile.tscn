@@ -2,11 +2,12 @@
 
 [sub_resource type="GDScript" id="GDScript_i7gq5"]
 script/source = "extends Button
-var id: int
+var swapping = false
+var color: int
 var row: int
 var offset: Vector2
-var initial_position: Vector2
-@onready var MAX_DESTROY_DISTANCE = size.x
+var init_pos: Vector2
+@onready var MAX_DRAG_DIST = size.x * 0.8
 signal moved
 
 
@@ -16,37 +17,38 @@ func _ready():
 	position.y -= size.y
 
 
-func _process( _delta ):
+func _process( _delta ): # тут відбувається перетягування плитки мишкою
 	position = get_global_mouse_position() - offset
-	if abs(initial_position.x - position.x) > MAX_DESTROY_DISTANCE * 0.8:
+	if abs(init_pos.x - position.x) > MAX_DRAG_DIST:
 		set_process(false)
-	if abs(initial_position.y - position.y) > MAX_DESTROY_DISTANCE * 0.8:
-#	if position.distance_to(initial_position) > MAX_DESTROY_DISTANCE * 0.8:
-		var direction = \"UP\"
-		if initial_position.y < position.y:
-			direction = \"DOWN\"
-		position = initial_position
-		initial_position = Vector2.ZERO
-		moved.emit( row, direction )
-		set_process( false )
+		position = init_pos
+	if abs(init_pos.y - position.y) > MAX_DRAG_DIST:
+		var row_to_swap = row + 1 # рядок вище
+		if init_pos.y < position.y: # або якшо гравець потягнув вниз
+			row_to_swap = row - 1 # берем рядок нижче
+		position = init_pos # треба повернути плитку на місце перед сигналом
+		swapping = true # це шоб не запускався код на відпусканні кнопки
+		set_process( false ) # вимикаємо цю функцію, шоб плитка більше не слідувала курсору
+		moved.emit( row, row_to_swap ) # сигналізуємо гру шо гравець переставив
 
 
 func _on_button_down():
-	initial_position = position
+	init_pos = position
 	offset = get_global_mouse_position() - position
 	set_process( true )
 
 
 func _on_button_up():
-	if initial_position != Vector2.ZERO:
-		position = initial_position
-	set_process( false )
+	if not swapping:
+		set_process( false )
+		position = init_pos
+	swapping = false
 "
 
 [node name="Button" type="Button" groups=["Tiles"]]
-offset_right = 100.0
-offset_bottom = 100.0
-theme_override_font_sizes/font_size = 44
+offset_right = 75.0
+offset_bottom = 75.0
+theme_override_font_sizes/font_size = 33
 text = "123"
 script = SubResource("GDScript_i7gq5")
 

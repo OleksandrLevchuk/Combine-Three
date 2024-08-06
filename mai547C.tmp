@@ -1,0 +1,128 @@
+[gd_scene load_steps=5 format=3 uid="uid://drjvpsepkhyqj"]
+
+[ext_resource type="PackedScene" uid="uid://cakkjmb01b3cp" path="res://tile.tscn" id="1_l7wyt"]
+
+[sub_resource type="GDScript" id="GDScript_1wurf"]
+resource_name = "main"
+script/source = "extends Control
+
+
+var column := [ 2, 2, 1, 2, 1, 2, 2, 1, 2, 1 ] # масив з якого створюватимемо плитки в колонці
+var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
+var GRID_GAP := 10 # відстань між плитками
+@onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
+@onready var SCREEN_BOTTOM := DisplayServer.window_get_size().y # низ екрана
+var tiles: Array
+var mobile_scale: int = 1
+
+
+func _ready(): # тут починається гра
+	if OS.has_feature(\"web_android\"):
+		mobile_scale = 2
+		GRID_SIZE *= mobile_scale
+		GRID_GAP *= mobile_scale
+	for i in column.size(): # ідемо циклом по кожному елементі в масиві
+		var tile: Button = tile_scene.instantiate() #створює плитку
+		tile.size *= mobile_scale
+		tile.id = column[i]
+		tile.row = i
+		tile.text = str( column[i] ) #ставить текст плитки на число з масива
+		# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
+		tile.position = Vector2( GRID_GAP, SCREEN_BOTTOM - GRID_GAP )
+		# відступити вверх на стільки клітинок, який номер в масиві
+		tile.position.y -= i * ( GRID_GAP + GRID_SIZE ) 
+		add_child( tile ) #додає плитку в дерево об'єктів
+		tiles.push_back( tile )
+
+
+func on_tile_moved( row: int, direction: String ):
+	var lower_id = row 
+	if direction==\"DOWN\":
+		lower_id = row-1
+	if lower_id < 0:
+		print(\"reached the bottom\")
+		return
+	var upper_id = row 
+	if direction==\"UP\":
+		upper_id = row+1
+	if upper_id > tiles.size() - 1:
+		print(\"reached the ceiling\")
+		return
+	print([\"moved\", row, direction ])
+	var lower_tile = tiles[lower_id]
+	var upper_tile = tiles[upper_id]
+	lower_tile.position.y -= GRID_SIZE + GRID_GAP
+	upper_tile.position.y += GRID_SIZE + GRID_GAP
+	lower_tile.row += 1
+	upper_tile.row -= 1
+	tiles[ lower_id ] = upper_tile
+	tiles[ upper_id ] = lower_tile
+	
+	var start := row
+	var color: int = tiles[row].id
+	while start > 0 and tiles[ start - 1 ].id == color:
+		start -= 1
+	var streak: int = 1
+	while start + streak < tiles.size() and tiles[ start + streak ].id == color:
+		streak += 1
+	if streak < 3: return
+	for i in streak:
+		tiles.pop_at(start).queue_free()
+	
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_c442r"]
+script/source = "extends Polygon2D
+
+
+func _ready():
+	if not OS.has_feature(\"movie\"): queue_free()
+	visible = true
+
+
+func _process(_delta):
+	position = get_global_mouse_position()
+"
+
+[sub_resource type="GDScript" id="GDScript_38kav"]
+script/source = "extends Polygon2D
+
+
+func _ready():
+	if not OS.has_feature(\"movie\"): queue_free()
+
+
+func _process(_delta):
+	position = get_global_mouse_position()
+
+
+func _input(event):
+	if event is InputEventMouseButton:
+		visible = event.pressed
+"
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_1wurf")
+metadata/_edit_lock_ = true
+
+[node name="Tile" parent="." instance=ExtResource("1_l7wyt")]
+visible = false
+layout_mode = 0
+
+[node name="cursor" type="Polygon2D" parent="."]
+visible = false
+scale = Vector2(2, 2)
+polygon = PackedVector2Array(0, 0, 9, 5, 6, 7, 4, 10)
+script = SubResource("GDScript_c442r")
+metadata/_edit_lock_ = true
+
+[node name="click" type="Polygon2D" parent="."]
+visible = false
+scale = Vector2(2, 2)
+color = Color(1, 1, 1, 0.501961)
+polygon = PackedVector2Array(-5, -4, -4, -5, 0, -6, 4, -5, 5, -4, 6, 0, 5, 4, 4, 5, 0, 6, -4, 5, -5, 4, -6, 0)
+script = SubResource("GDScript_38kav")
+metadata/_edit_lock_ = true

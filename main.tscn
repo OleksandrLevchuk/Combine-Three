@@ -7,7 +7,8 @@ resource_name = "main"
 script/source = "extends Control
 
 
-var column := [ 1, 2, 3, 4, 5, 6 ] # масив з якого створюватимемо плитки в колонці
+enum Colors { Red, Green }
+var column := [ 2, 2, 1, 2, 1, 2, 2, 1, 2, 1 ] # масив з якого створюватимемо плитки в колонці
 var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
 var GRID_GAP := 10 # відстань між плитками
 @onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
@@ -24,9 +25,9 @@ func _ready(): # тут починається гра
 	for i in column.size(): # ідемо циклом по кожному елементі в масиві
 		var tile: Button = tile_scene.instantiate() #створює плитку
 		tile.size *= mobile_scale
-		tile.id = column[i]
+		tile.color = Colors.values()[column[i]-1]
 		tile.row = i
-		tile.text = str( column[i] ) #ставить текст плитки на число з масива
+		tile.text = str( tile.color ) #ставить текст плитки на число з масива
 		# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
 		tile.position = Vector2( GRID_GAP, SCREEN_BOTTOM - GRID_GAP )
 		# відступити вверх на стільки клітинок, який номер в масиві
@@ -34,28 +35,41 @@ func _ready(): # тут починається гра
 		add_child( tile ) #додає плитку в дерево об'єктів
 		tiles.push_back( tile )
 
-func on_tile_moved( row, direction ):
-	var lower_id = row 
-	if direction==\"DOWN\":
-		lower_id = row-1
-	if lower_id < 0:
+
+func on_tile_moved( row1, row2 ):
+	var lower_row = min(row1, row2)
+	if lower_row < 0:
 		print(\"reached the bottom\")
 		return
-	var upper_id = row 
-	if direction==\"UP\":
-		upper_id = row+1
-	if upper_id > tiles.size() - 1:
+	var upper_row = max( row1, row2 )
+	if upper_row > tiles.size() - 1:
 		print(\"reached the ceiling\")
 		return
-	print([\"moved\", row, direction ])
-	var lower_tile = tiles[lower_id]
-	var upper_tile = tiles[upper_id]
+	print([\"moved\", row1, row2 ])
+	var lower_tile = tiles[lower_row]
+	var upper_tile = tiles[upper_row]
 	lower_tile.position.y -= GRID_SIZE + GRID_GAP
 	upper_tile.position.y += GRID_SIZE + GRID_GAP
 	lower_tile.row += 1
 	upper_tile.row -= 1
-	tiles[ lower_id ] = upper_tile
-	tiles[ upper_id ] = lower_tile
+	tiles[ lower_row ] = upper_tile
+	tiles[ upper_row ] = lower_tile
+	
+	for row in [row1, row2]:
+		var color = tiles[row].color
+		var start = row
+		while start > 0 and tiles[ start-1 ].color == color:
+			start -= 1
+		var streak: int = 1
+		while start+streak < tiles.size() and tiles[ start+streak ].color == color:
+			streak += 1
+		print([ \"checking row:\", row, \"color:\", color, \"starting at:\", start, \"streak:\", streak])
+		if streak < 3: continue
+		print(\"streak\")
+		for i in streak:
+			tiles.pop_at(start).queue_free()
+	
+	
 "
 
 [sub_resource type="GDScript" id="GDScript_c442r"]
