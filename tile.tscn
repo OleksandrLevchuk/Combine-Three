@@ -3,7 +3,7 @@
 [sub_resource type="GDScript" id="GDScript_i7gq5"]
 script/source = "extends Button
 var swapping = false
-var color: int
+var color
 var row: int
 var offset: Vector2
 var init_pos: Vector2
@@ -14,7 +14,6 @@ signal moved
 func _ready():
 	moved.connect(get_parent().on_tile_moved)
 	set_process( false )
-	position.y -= size.y
 
 
 func _process( _delta ): # тут відбувається перетягування плитки мишкою
@@ -23,13 +22,13 @@ func _process( _delta ): # тут відбувається перетягува�
 		set_process(false)
 		position = init_pos
 	if abs(init_pos.y - position.y) > MAX_DRAG_DIST:
-		var row_to_swap = row + 1 # рядок вище
+		var destination = row + 1 # рядок вище
 		if init_pos.y < position.y: # або якшо гравець потягнув вниз
-			row_to_swap = row - 1 # берем рядок нижче
+			destination = row - 1 # берем рядок нижче
+		set_process( false ) # вимикаємо цю функцію, шоб плитка більше не слідувала курсору
 		position = init_pos # треба повернути плитку на місце перед сигналом
 		swapping = true # це шоб не запускався код на відпусканні кнопки
-		set_process( false ) # вимикаємо цю функцію, шоб плитка більше не слідувала курсору
-		moved.emit( row, row_to_swap ) # сигналізуємо гру шо гравець переставив
+		moved.emit( self, destination ) # сигналізуємо гру шо гравець переставив
 
 
 func _on_button_down():
@@ -48,8 +47,8 @@ func _on_button_up():
 [node name="Button" type="Button" groups=["Tiles"]]
 offset_right = 75.0
 offset_bottom = 75.0
-theme_override_font_sizes/font_size = 33
-text = "123"
+theme_override_font_sizes/font_size = 18
+text = "12345"
 script = SubResource("GDScript_i7gq5")
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]

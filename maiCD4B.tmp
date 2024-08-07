@@ -8,7 +8,7 @@ script/source = "extends Control
 
 
 enum Colors { Red, Green }
-var column := [ 0,0,1,0,1 ] # масив з якого створюватимемо плитки в колонці
+var column := [ 2, 2, 1, 2, 1, 2, 2, 1, 2, 1 ] # масив з якого створюватимемо плитки в колонці
 var tile_scene := preload(\"res://tile.tscn\") # берем зразок плитки
 var GRID_GAP := 10 # відстань між плитками
 @onready var GRID_SIZE :int = tile_scene.instantiate().size.x # розмір плиток
@@ -23,62 +23,55 @@ func _ready(): # тут починається гра
 		GRID_SIZE *= mobile_scale
 		GRID_GAP *= mobile_scale
 	for i in column.size(): # ідемо циклом по кожному елементі в масиві
-		var tile = tile_scene.instantiate() #створює плитку
-		var color = \"RED\" if column[i]==0 else \"GREEN\"
+		var tile: Button = tile_scene.instantiate() #створює плитку
 		tile.size *= mobile_scale
+		tile.color = Colors.values()[column[i]-1]
 		tile.row = i
-		tile.color = color
-		tile.text = color #ставить текст плитки
-		tile.position = calc_position( i )
+		tile.text = str( tile.color ) #ставить текст плитки на число з масива
+		# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
+		tile.position = Vector2( GRID_GAP, SCREEN_BOTTOM - GRID_GAP )
+		# відступити вверх на стільки клітинок, який номер в масиві
+		tile.position.y -= i * ( GRID_GAP + GRID_SIZE ) 
 		add_child( tile ) #додає плитку в дерево об'єктів
 		tiles.push_back( tile )
 
 
 func on_tile_moved( tile, destination ):
-	var row = tile.row
-	var color = tile.color
-	prints(\"moving tile \", row, 'color:', color, 'to', destination )
-	if destination not in range(0,tiles.size()):
-		print(\"forbidden move\")
+	var lower_row = min( tile.id, destination )
+	var upper_row = max( tile.id, destination )
+	if destination in range( 0, tiles.size() ):
+		print(\"out of bounds\")
 		return
-	if color==tiles[destination].color:
-		print('same color')
+	if tile.color == tiles[destination].color:
+		print(\"the tiles are the same color\")
 		return
-	var direction = 1 if destination>row else -1
-	prints('start', destination, 'direction', direction)
+	print([\"moving tile \", tile.id, 'to', destination ])
+#	var lower_tile = tiles[lower_row]
+#	var upper_tile = tiles[upper_row]
+#	lower_tile.position.y -= GRID_SIZE + GRID_GAP
+#	upper_tile.position.y += GRID_SIZE + GRID_GAP
+#	lower_tile.row += 1
+#	upper_tile.row -= 1
+#	tiles[ lower_row ] = upper_tile
+#	tiles[ upper_row ] = lower_tile
+	
+	var streak_found = false
+	var color = tiles[row].color
+	var start = row
+	while start > 0 and tiles[ start-1 ].color == color:
+		start -= 1
 	var streak = 1
-	var end = destination + direction
-	while end in range(0,tiles.size()) and tiles[end].color == color:
-		prints('next id', end, 'has color', tiles[end].color)
+	while start+streak < tiles.size() and tiles[ start+streak ].color == color:
 		streak += 1
-		end += direction
-	prints( \"checking streaks starting at:\", destination, \"streak:\", streak )
-	if streak < 3: return
-	var second_tile = tiles[ destination ]
-	tiles[ tile.row ] = second_tile
-	tiles[ destination ] = tile
-	second_tile.row = tile.row - streak
-	create_tween().tween_property( second_tile, 'position', calc_position(second_tile.row), .5 )
-#	tiles[ tile.row ].tween_property
-	var streak_bottom = min(destination,end)
-	prints('removing streak from', streak_bottom )
-	for i in range( destination, end, direction):
-		var matched_tile = tiles.pop_at(i)
-		prints('popping tile', i, 'color', matched_tile.color)
-		var tween := create_tween()
-		tween.set_parallel(true)
-		tween.tween_property( matched_tile, 'scale', Vector2.ZERO, .5 )
-		tween.tween_property( matched_tile, 'position', Vector2.ONE*GRID_SIZE/2, .5 ).as_relative()
-		tween.finished.connect( func():matched_tile.queue_free())
-	for i in range(destination+1, tiles.size()):
-		tiles[i].position.y += ( GRID_SIZE + GRID_GAP ) * streak
-	print(tiles.map(func(tile): return tile.color))
-
-
-func calc_position( i ):
-	# задати положення плитки, відступивши 10 пікс зліва і знизу екрана
-	# відступити вверх на стільки клітинок, який номер в масиві
-	return Vector2( GRID_GAP, SCREEN_BOTTOM - (i+1) * ( GRID_GAP + GRID_SIZE ) )
+	print([ \"checking row:\", row, \"color:\", color, \"starting at:\", start, \"streak:\", streak])
+	if streak >= 3: 
+		streak_found = true
+		print(\"streak\")
+		for i in streak:
+			tiles.pop_at(start).queue_free()
+		for tile in tiles:
+			tile.position.y += ( GRID_SIZE + GRID_GAP ) * streak
+		print(tiles.map(func(tile): return tile.color))
 "
 
 [sub_resource type="GDScript" id="GDScript_c442r"]
