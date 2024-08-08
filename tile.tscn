@@ -45,8 +45,9 @@ func _on_button_up():
 "
 
 [node name="Button" type="Button" groups=["Tiles"]]
-offset_right = 75.0
-offset_bottom = 75.0
+offset_right = 80.0
+offset_bottom = 80.0
+pivot_offset = Vector2(40, 40)
 theme_override_font_sizes/font_size = 18
 text = "12345"
 script = SubResource("GDScript_i7gq5")
